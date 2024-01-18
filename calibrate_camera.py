@@ -205,13 +205,12 @@ def main():
     parser.add_argument('dirpath', type=str, help='Path to the directory containing the images')
     parser.add_argument('image_format', type=str, help='Image format (e.g., "png" or "jpg")')
     parser.add_argument("ref_plan_path", type=str, help='path to the reference plan that gives the origin of the working plan. The origin is the upper left corner')
-    parser.add_argument('square_size', type=float, default=25, help='Size of an edge of the square of the checkerboard in millimeters')
-    parser.add_argument('width', type=int, default=10, help='Number of inner corners along the width')
-    parser.add_argument('height', type=int, default=7, help='Number of inner corners along the height')
-    parser.add_argument('save_to', type=str, default='.', help='Path to where to save the calibration')
+    parser.add_argument('--square_size', type=float, default=25, help='Size of an edge of the square of the checkerboard in millimeters')
+    parser.add_argument('--width', type=int, default=10, help='Number of inner corners along the width')
+    parser.add_argument('--height', type=int, default=7, help='Number of inner corners along the height')
+    parser.add_argument('--save_to', type=str, default='./calibration.yml', help='Path to where to save the calibration')
 
     args = parser.parse_args()
-
 
     args = parser.parse_args()
 

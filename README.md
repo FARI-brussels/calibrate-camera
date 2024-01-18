@@ -2,20 +2,40 @@
 
 ## Overview
 
-This script performs camera calibration using a set of images of a checkerboard pattern. It computes the camera matrix, distortion coefficients, rotation vectors, translation vectors, and homography matrix. These parameters are essential for various computer vision tasks like 3D reconstruction, object tracking, and image perspective correction. It also contains utility function to convert undistord and warp image as well as to convert image coordinates to real world coordinates.
-Usage
+This script performs camera calibration using a set of images of a checkerboard pattern. It computes the camera matrix, distortion coefficients, rotation vectors, translation vectors, and homography matrix. These parameters are essential for various computer vision tasks like 3D reconstruction, object tracking, and image perspective correction. It also contains utility functions to undistort and warp images as well as to convert image coordinates to real-world coordinates.
+
+
+## Usage
 
 ```bash
-python calibrate_camera.py /path/to/images image_format /path/to/reference_plan.jpg square_size width height /path/to/save/calibration.yml
+python calibrate_camera.py /path/to/images image_format /path/to/reference_plan.jpg [--square_size SQUARE_SIZE] [--width WIDTH] [--height HEIGHT] [--save_to /path/to/save/calibration.yml]
+
 ```
+Parameters:
 
     /path/to/images: Directory containing checkerboard images.
     image_format: Format of the images (e.g., 'jpg', 'png').
     /path/to/reference_plan.jpg: Path to the reference plan image, defining the origin of the working plan.
-    square_size: Size of a square on the checkerboard in real-world units (e.g., centimeters).
-    width: Number of inner corners along the width of the checkerboard.
-    height: Number of inner corners along the height of the checkerboard.
-    /path/to/save/calibration.yml: Destination file path to save the calibration results.
+    --square_size: (Optional) Size of a square on the checkerboard in real-world units (e.g., millimeters). Default is 25.
+    --width: (Optional) Number of inner corners along the width of the checkerboard. Default is 10.
+    --height: (Optional) Number of inner corners along the height of the checkerboard. Default is 7.
+    --save_to: (Optional) Destination file path to save the calibration results. Default is the current directory with the filename calibration.yml.
+
+## Examples:
+
+Using default parameters for optional arguments:
+
+```bash
+python calibrate_camera.py /path/to/images jpg /path/to/reference_plan.jpg
+```
+This command will run the calibration with the default square_size (25), width (10), height (7), and save the calibration to ./calibration.yml in the current directory.
+
+Specifying all parameters:
+
+```bash
+python calibrate_camera.py /path/to/images jpg /path/to/reference_plan.jpg --square_size 30 --width 9 --height 6 --save_to /custom/path/calibration.yml
+```
+This command will run the calibration with a square_size of 30 mm, width of 9, height of 6, and save the calibration to /custom/path/calibration.yml.
 
 ## Features
 
