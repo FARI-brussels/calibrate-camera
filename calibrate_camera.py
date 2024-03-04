@@ -67,7 +67,7 @@ def calibrate(dirpath, image_format, width, height):
     return ret, mtx, dist, rvecs, tvecs
 
 
-def find_homography(ref_plan, mtx, dist, width, height, square_size):
+def find_homography_from_checkerboad(ref_plan, mtx, dist, width, height, square_size):
     """
     Find the homography matrix for a given reference checkerboard image.
     
@@ -168,6 +168,41 @@ def point_coordinates_to_world_coordinates(img_point, H):
     return world_point.tolist()
 
 
+
+def generate_aruco_markers(num_markers=4, marker_size=100):
+    # Get the ArUco dictionary
+    aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+    
+    for i in range(num_markers):
+        # Generate the marker
+        img = cv2.aruco.generateImageMarker(aruco_dict, i, marker_size)
+        cv2.imwrite(f'aruco_marker_{i}.jpg', img)
+
+
+def detect_aruco_corners(image_path):
+    image = cv2.imread(image_path)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)
+    parameters = cv2.aruco.DetectorParameters_create()
+    corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
+    
+    top_left_corners = [c[0][0] for c in corners] # Extracting the top-left corner of each marker
+    return top_left_corners, ids
+
+def find_homography_from_aruco(image_path, real_world_positions):
+    top_left_corners, _ = detect_aruco_corners(image_path)
+    if len(top_left_corners) < 4:
+        raise ValueError("Less than 4 ArUco markers detected.")
+    
+    # Assuming real_world_positions is a list of 4 points in the format [(x1, y1), (x2, y2), ..., (x4, y4)]
+    pts_src = np.array(top_left_corners, dtype=np.float32)
+    pts_dst = np.array(real_world_positions, dtype=np.float32)
+    
+    # Calculate the Homography matrix
+    H, status = cv2.findHomography(pts_src, pts_dst)
+    return H
+
+
 def warp_image(image, H, width, height):
     # Display image as if the camera was directly above the working plan (bird's eye view)
     
@@ -223,7 +258,7 @@ def main():
     square_size = args.square_size
 
     ret, mtx, dist, rvecs, tvecs = calibrate(dirpath, image_format, width, height)
-    H, _ = find_homography(ref_plan_path, mtx, dist, width, height, square_size)
+    H, _ = find_homography_from_checkerboad(ref_plan_path, mtx, dist, width, height, square_size)
     save_coefficients(mtx, dist, H, path)
     print(f"RMS re-projection error: {ret}")
     print("Camera matrix (intrinsic parameters):")
