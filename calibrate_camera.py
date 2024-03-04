@@ -182,7 +182,7 @@ def generate_aruco_markers(num_markers=4, marker_size=100):
 def detect_aruco_corners(image_path):
     image = cv2.imread(image_path)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    aruco_dict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)
+    aruco_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
     parameters = cv2.aruco.DetectorParameters_create()
     corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
     
@@ -271,4 +271,5 @@ def main():
     print(tvecs)
 
 if __name__ == '__main__':
-    main()
+    m = detect_aruco_corners('/home/fari/Pictures/calibrationcheckerboard/calibration/IMG_20210614_155153.jpg')
+    #main()
